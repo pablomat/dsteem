@@ -1,8 +1,8 @@
 {
-  "name": "dsteem",
-  "version": "0.10.1",
-  "description": "Steem blockchain RPC client library",
-  "author": "Johan Nordberg",
+  "name": "eftg-dsteem",
+  "version": "1.0.0",
+  "description": "EFTG blockchain RPC client library",
+  "author": "pablomat",
   "license": "BSD-3-Clause",
   "main": "./lib/index-node",
   "typings": "./lib/index",
@@ -17,7 +17,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jnordberg/dsteem"
+    "url": "https://github.com/pablomat/dsteem"
   },
   "scripts": {
     "test": "make ci-test",
