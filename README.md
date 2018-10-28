@@ -1,7 +1,7 @@
 
-# [dsteem](https://github.com/jnordberg/dsteem) [![Build Status](https://img.shields.io/circleci/project/github/jnordberg/dsteem.svg?style=flat-square)](https://circleci.com/gh/jnordberg/workflows/dsteem) [![Coverage Status](https://img.shields.io/coveralls/jnordberg/dsteem.svg?style=flat-square)](https://coveralls.io/github/jnordberg/dsteem?branch=master) [![Package Version](https://img.shields.io/npm/v/dsteem.svg?style=flat-square)](https://www.npmjs.com/package/dsteem)
+# [eftg-dsteem](https://github.com/pablomat/dsteem) [![Package Version](https://img.shields.io/npm/v/dsteem.svg?style=flat-square)](https://www.npmjs.com/package/eftg-dsteem)
 
-Robust [steem blockchain](https://steem.io) client library that runs in both node.js and the browser.
+Robust [EFTG blockchain](https://eftg.blkcc.xyz) client library that runs in both node.js and the browser.
 
 * [Demo](https://comments.steem.vc) ([source](https://github.com/jnordberg/dsteem/tree/master/examples/comment-feed))
 * [Code playground](https://playground.steem.vc)

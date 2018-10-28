@@ -294,7 +294,7 @@ export class BroadcastAPI {
         }
 
         const result = await this.send(this.sign(tx, key))
-        assert(result.expired === false, 'transaction expired')
+        /** assert(result.expired === false, 'transaction expired') */
 
         return result
     }
