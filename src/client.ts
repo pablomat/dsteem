@@ -50,12 +50,12 @@ export const VERSION = packageVersion
 /**
  * Main steem network chain id.
  */
-export const DEFAULT_CHAIN_ID = Buffer.from('0000000000000000000000000000000000000000000000000000000000000000', 'hex')
+export const DEFAULT_CHAIN_ID = Buffer.from('1c15984beb16945c01cb9bc3d654b0417c650461dfe535018fe03a4fc5a36864', 'hex')
 
 /**
  * Main steem network address prefix.
  */
-export const DEFAULT_ADDRESS_PREFIX = 'STM'
+export const DEFAULT_ADDRESS_PREFIX = 'EUR'
 
 interface RPCRequest {
     /**
