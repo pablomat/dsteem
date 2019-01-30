@@ -1,9 +1,9 @@
-declare module 'dsteem/version' {
+declare module 'eftg-dsteem/version' {
 	 const _default: string;
 	export default _default;
 
 }
-declare module 'dsteem/steem/asset' {
+declare module 'eftg-dsteem/steem/asset' {
 	/**
 	 * @file Steem asset type definitions and helpers.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -38,10 +38,15 @@ declare module 'dsteem/steem/asset' {
 	 * You acknowledge that this software is not designed, licensed or intended for use
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
+	export interface SMTAsset {
+	    amount: string | number;
+	    precision: number;
+	    nai: string;
+	}
 	/**
 	 * Asset symbol string.
 	 */
-	export type AssetSymbol = 'STEEM' | 'VESTS' | 'SBD' | 'TESTS' | 'TBD';
+	export type AssetSymbol = 'STEEM' | 'VESTS' | 'SBD' | 'TESTS' | 'TBD' | 'EFTG' | 'EUR';
 	/**
 	 * Class representing a steem asset, e.g. `1.000 STEEM` or `12.112233 VESTS`.
 	 */
@@ -139,7 +144,155 @@ declare module 'dsteem/steem/asset' {
 	}
 
 }
-declare module 'dsteem/steem/misc' {
+declare module 'eftg-dsteem/steem/account' {
+	/**
+	 * @file Steem account type definitions.
+	 * @author Johan Nordberg <code@johan-nordberg.com>
+	 * @license
+	 * Copyright (c) 2017 Johan Nordberg. All Rights Reserved.
+	 *
+	 * Redistribution and use in source and binary forms, with or without modification,
+	 * are permitted provided that the following conditions are met:
+	 *
+	 *  1. Redistribution of source code must retain the above copyright notice, this
+	 *     list of conditions and the following disclaimer.
+	 *
+	 *  2. Redistribution in binary form must reproduce the above copyright notice,
+	 *     this list of conditions and the following disclaimer in the documentation
+	 *     and/or other materials provided with the distribution.
+	 *
+	 *  3. Neither the name of the copyright holder nor the names of its contributors
+	 *     may be used to endorse or promote products derived from this software without
+	 *     specific prior written permission.
+	 *
+	 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	 * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	 * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+	 * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+	 * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+	 * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	 * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+	 * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+	 * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+	 * OF THE POSSIBILITY OF SUCH DAMAGE.
+	 *
+	 * You acknowledge that this software is not designed, licensed or intended for use
+	 * in the design, construction, operation or maintenance of any military facility.
+	 */
+	import { PublicKey } from 'eftg-dsteem/crypto';
+	import { Asset } from 'eftg-dsteem/steem/asset';
+	export interface AuthorityType {
+	    weight_threshold: number;
+	    account_auths: Array<[string, number]>;
+	    key_auths: Array<[string | PublicKey, number]>;
+	}
+	export class Authority implements AuthorityType {
+	    /**
+	     * Convenience to create a new instance from PublicKey or authority object.
+	     */
+	    static from(value: string | PublicKey | AuthorityType): Authority;
+	    weight_threshold: number;
+	    account_auths: Array<[string, number]>;
+	    key_auths: Array<[string | PublicKey, number]>;
+	    constructor({ weight_threshold, account_auths, key_auths }: AuthorityType);
+	}
+	export interface Account {
+	    id: number;
+	    name: string;
+	    owner: Authority;
+	    active: Authority;
+	    posting: Authority;
+	    memo_key: string;
+	    json_metadata: string;
+	    proxy: string;
+	    last_owner_update: string;
+	    last_account_update: string;
+	    created: string;
+	    mined: boolean;
+	    owner_challenged: boolean;
+	    active_challenged: boolean;
+	    last_owner_proved: string;
+	    last_active_proved: string;
+	    recovery_account: string;
+	    reset_account: string;
+	    last_account_recovery: string;
+	    comment_count: number;
+	    lifetime_vote_count: number;
+	    post_count: number;
+	    can_vote: boolean;
+	    voting_power: number;
+	    last_vote_time: string;
+	    voting_manabar: {
+	        current_mana: string | number;
+	        last_update_time: number;
+	    };
+	    balance: string | Asset;
+	    savings_balance: string | Asset;
+	    sbd_balance: string | Asset;
+	    sbd_seconds: string;
+	    sbd_seconds_last_update: string;
+	    sbd_last_interest_payment: string;
+	    savings_sbd_balance: string | Asset;
+	    savings_sbd_seconds: string;
+	    savings_sbd_seconds_last_update: string;
+	    savings_sbd_last_interest_payment: string;
+	    savings_withdraw_requests: number;
+	    reward_sbd_balance: string | Asset;
+	    reward_steem_balance: string | Asset;
+	    reward_vesting_balance: string | Asset;
+	    reward_vesting_steem: string | Asset;
+	    curation_rewards: number | string;
+	    posting_rewards: number | string;
+	    vesting_shares: string | Asset;
+	    delegated_vesting_shares: string | Asset;
+	    received_vesting_shares: string | Asset;
+	    vesting_withdraw_rate: string | Asset;
+	    next_vesting_withdrawal: string;
+	    withdrawn: number | string;
+	    to_withdraw: number | string;
+	    withdraw_routes: number;
+	    proxied_vsf_votes: number[];
+	    witnesses_voted_for: number;
+	    average_bandwidth: number | string;
+	    lifetime_bandwidth: number | string;
+	    last_bandwidth_update: string;
+	    average_market_bandwidth: number | string;
+	    lifetime_market_bandwidth: number | string;
+	    last_market_bandwidth_update: string;
+	    last_post: string;
+	    last_root_post: string;
+	}
+	export interface ExtendedAccount extends Account {
+	    /**
+	     * Convert vesting_shares to vesting steem.
+	     */
+	    vesting_balance: string | Asset;
+	    reputation: string | number;
+	    /**
+	     * Transfer to/from vesting.
+	     */
+	    transfer_history: any[];
+	    /**
+	     * Limit order / cancel / fill.
+	     */
+	    market_history: any[];
+	    post_history: any[];
+	    vote_history: any[];
+	    other_history: any[];
+	    witness_votes: string[];
+	    tags_usage: string[];
+	    guest_bloggers: string[];
+	    open_orders?: any[];
+	    comments?: any[];
+	    blog?: any[];
+	    feed?: any[];
+	    recent_replies?: any[];
+	    recommended?: any[];
+	}
+
+}
+declare module 'eftg-dsteem/steem/misc' {
+	/// <reference types="node" />
 	/**
 	 * @file Misc steem type definitions.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -174,8 +327,8 @@ declare module 'dsteem/steem/misc' {
 	 * You acknowledge that this software is not designed, licensed or intended for use
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
-	/// <reference types="node" />
-	import { Asset, Price } from 'dsteem/steem/asset';
+	import { Account } from 'eftg-dsteem/steem/account';
+	import { Asset, Price } from 'eftg-dsteem/steem/asset';
 	/**
 	 * Large number that may be unsafe to represent natively in JavaScript.
 	 */
@@ -351,9 +504,13 @@ declare module 'dsteem/steem/misc' {
 	 * Return the vesting share price.
 	 */
 	export function getVestingSharePrice(props: DynamicGlobalProperties): Price;
+	/**
+	 * Returns the vests of specified account. Default: Subtract delegated & add received
+	 */
+	export function getVests(account: Account, subtract_delegated?: boolean, add_received?: boolean): number;
 
 }
-declare module 'dsteem/steem/serializer' {
+declare module 'eftg-dsteem/steem/serializer' {
 	/**
 	 * @file Steem protocol serialization.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -390,10 +547,10 @@ declare module 'dsteem/steem/serializer' {
 	 */
 	/// <reference types="node" />
 	import * as ByteBuffer from 'bytebuffer';
-	import { PublicKey } from 'dsteem/crypto';
-	import { Asset } from 'dsteem/steem/asset';
-	import { HexBuffer } from 'dsteem/steem/misc';
-	import { Operation } from 'dsteem/steem/operation';
+	import { PublicKey } from 'eftg-dsteem/crypto';
+	import { Asset } from 'eftg-dsteem/steem/asset';
+	import { HexBuffer } from 'eftg-dsteem/steem/misc';
+	import { Operation } from 'eftg-dsteem/steem/operation';
 	export type Serializer = (buffer: ByteBuffer, data: any) => void;
 	export const Types: {
 	    Array: (itemSerializer: Serializer) => (buffer: ByteBuffer, data: any[]) => void;
@@ -431,7 +588,7 @@ declare module 'dsteem/steem/serializer' {
 	};
 
 }
-declare module 'dsteem/utils' {
+declare module 'eftg-dsteem/utils' {
 	/**
 	 * @file Misc utility functions.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -488,9 +645,9 @@ declare module 'dsteem/utils' {
 	 * Fetch API wrapper that retries until timeout is reached.
 	 */
 	export function retryingFetch(url: string, opts: any, timeout: number, backoff: (tries: number) => number, fetchTimeout?: (tries: number) => number): Promise<any>;
-	import { PublicKey } from 'dsteem/crypto';
-	import { Asset, PriceType } from 'dsteem/steem/asset';
-	import { WitnessSetPropertiesOperation } from 'dsteem/steem/operation';
+	import { PublicKey } from 'eftg-dsteem/crypto';
+	import { Asset, PriceType } from 'eftg-dsteem/steem/asset';
+	import { WitnessSetPropertiesOperation } from 'eftg-dsteem/steem/operation';
 	export interface WitnessProps {
 	    account_creation_fee?: string | Asset;
 	    account_subsidy_budget?: number;
@@ -505,7 +662,7 @@ declare module 'dsteem/utils' {
 	export function buildWitnessUpdateOp(owner: string, props: WitnessProps): WitnessSetPropertiesOperation;
 
 }
-declare module 'dsteem/crypto' {
+declare module 'eftg-dsteem/crypto' {
 	/**
 	 * @file Steem crypto helpers.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -541,7 +698,7 @@ declare module 'dsteem/crypto' {
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
 	/// <reference types="node" />
-	import { SignedTransaction, Transaction } from 'dsteem/steem/transaction';
+	import { SignedTransaction, Transaction } from 'eftg-dsteem/steem/transaction';
 	/**
 	 * Network id used in WIF-encoding.
 	 */
@@ -654,150 +811,7 @@ declare module 'dsteem/crypto' {
 	export {};
 
 }
-declare module 'dsteem/steem/account' {
-	/**
-	 * @file Steem account type definitions.
-	 * @author Johan Nordberg <code@johan-nordberg.com>
-	 * @license
-	 * Copyright (c) 2017 Johan Nordberg. All Rights Reserved.
-	 *
-	 * Redistribution and use in source and binary forms, with or without modification,
-	 * are permitted provided that the following conditions are met:
-	 *
-	 *  1. Redistribution of source code must retain the above copyright notice, this
-	 *     list of conditions and the following disclaimer.
-	 *
-	 *  2. Redistribution in binary form must reproduce the above copyright notice,
-	 *     this list of conditions and the following disclaimer in the documentation
-	 *     and/or other materials provided with the distribution.
-	 *
-	 *  3. Neither the name of the copyright holder nor the names of its contributors
-	 *     may be used to endorse or promote products derived from this software without
-	 *     specific prior written permission.
-	 *
-	 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-	 * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-	 * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-	 * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-	 * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-	 * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-	 * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-	 * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-	 * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-	 * OF THE POSSIBILITY OF SUCH DAMAGE.
-	 *
-	 * You acknowledge that this software is not designed, licensed or intended for use
-	 * in the design, construction, operation or maintenance of any military facility.
-	 */
-	import { PublicKey } from 'dsteem/crypto';
-	import { Asset } from 'dsteem/steem/asset';
-	export interface AuthorityType {
-	    weight_threshold: number;
-	    account_auths: Array<[string, number]>;
-	    key_auths: Array<[string | PublicKey, number]>;
-	}
-	export class Authority implements AuthorityType {
-	    /**
-	     * Convenience to create a new instance from PublicKey or authority object.
-	     */
-	    static from(value: string | PublicKey | AuthorityType): Authority;
-	    weight_threshold: number;
-	    account_auths: Array<[string, number]>;
-	    key_auths: Array<[string | PublicKey, number]>;
-	    constructor({ weight_threshold, account_auths, key_auths }: AuthorityType);
-	}
-	export interface Account {
-	    id: number;
-	    name: string;
-	    owner: Authority;
-	    active: Authority;
-	    posting: Authority;
-	    memo_key: string;
-	    json_metadata: string;
-	    proxy: string;
-	    last_owner_update: string;
-	    last_account_update: string;
-	    created: string;
-	    mined: boolean;
-	    owner_challenged: boolean;
-	    active_challenged: boolean;
-	    last_owner_proved: string;
-	    last_active_proved: string;
-	    recovery_account: string;
-	    reset_account: string;
-	    last_account_recovery: string;
-	    comment_count: number;
-	    lifetime_vote_count: number;
-	    post_count: number;
-	    can_vote: boolean;
-	    voting_power: number;
-	    last_vote_time: string;
-	    balance: string | Asset;
-	    savings_balance: string | Asset;
-	    sbd_balance: string | Asset;
-	    sbd_seconds: string;
-	    sbd_seconds_last_update: string;
-	    sbd_last_interest_payment: string;
-	    savings_sbd_balance: string | Asset;
-	    savings_sbd_seconds: string;
-	    savings_sbd_seconds_last_update: string;
-	    savings_sbd_last_interest_payment: string;
-	    savings_withdraw_requests: number;
-	    reward_sbd_balance: string | Asset;
-	    reward_steem_balance: string | Asset;
-	    reward_vesting_balance: string | Asset;
-	    reward_vesting_steem: string | Asset;
-	    curation_rewards: number | string;
-	    posting_rewards: number | string;
-	    vesting_shares: string | Asset;
-	    delegated_vesting_shares: string | Asset;
-	    received_vesting_shares: string | Asset;
-	    vesting_withdraw_rate: string | Asset;
-	    next_vesting_withdrawal: string;
-	    withdrawn: number | string;
-	    to_withdraw: number | string;
-	    withdraw_routes: number;
-	    proxied_vsf_votes: number[];
-	    witnesses_voted_for: number;
-	    average_bandwidth: number | string;
-	    lifetime_bandwidth: number | string;
-	    last_bandwidth_update: string;
-	    average_market_bandwidth: number | string;
-	    lifetime_market_bandwidth: number | string;
-	    last_market_bandwidth_update: string;
-	    last_post: string;
-	    last_root_post: string;
-	}
-	export interface ExtendedAccount extends Account {
-	    /**
-	     * Convert vesting_shares to vesting steem.
-	     */
-	    vesting_balance: string | Asset;
-	    reputation: string | number;
-	    /**
-	     * Transfer to/from vesting.
-	     */
-	    transfer_history: any[];
-	    /**
-	     * Limit order / cancel / fill.
-	     */
-	    market_history: any[];
-	    post_history: any[];
-	    vote_history: any[];
-	    other_history: any[];
-	    witness_votes: string[];
-	    tags_usage: string[];
-	    guest_bloggers: string[];
-	    open_orders?: any[];
-	    comments?: any[];
-	    blog?: any[];
-	    feed?: any[];
-	    recent_replies?: any[];
-	    recommended?: any[];
-	}
-
-}
-declare module 'dsteem/steem/comment' {
+declare module 'eftg-dsteem/steem/comment' {
 	/**
 	 * @file Steem type definitions related to comments and posting.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -832,7 +846,7 @@ declare module 'dsteem/steem/comment' {
 	 * You acknowledge that this software is not designed, licensed or intended for use
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
-	import { Asset } from 'dsteem/steem/asset';
+	import { Asset } from 'eftg-dsteem/steem/asset';
 	export interface Comment {
 	    id: number;
 	    category: string;
@@ -892,7 +906,7 @@ declare module 'dsteem/steem/comment' {
 	}
 
 }
-declare module 'dsteem/steem/operation' {
+declare module 'eftg-dsteem/steem/operation' {
 	/**
 	 * @file Steem operation type definitions.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -928,16 +942,16 @@ declare module 'dsteem/steem/operation' {
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
 	/// <reference types="node" />
-	import { PublicKey } from 'dsteem/crypto';
-	import { AuthorityType } from 'dsteem/steem/account';
-	import { Asset, PriceType } from 'dsteem/steem/asset';
-	import { SignedBlockHeader } from 'dsteem/steem/block';
-	import { BeneficiaryRoute } from 'dsteem/steem/comment';
-	import { ChainProperties, HexBuffer } from 'dsteem/steem/misc';
+	import { PublicKey } from 'eftg-dsteem/crypto';
+	import { AuthorityType } from 'eftg-dsteem/steem/account';
+	import { Asset, PriceType } from 'eftg-dsteem/steem/asset';
+	import { SignedBlockHeader } from 'eftg-dsteem/steem/block';
+	import { BeneficiaryRoute } from 'eftg-dsteem/steem/comment';
+	import { ChainProperties, HexBuffer } from 'eftg-dsteem/steem/misc';
 	/**
 	 * Operation name.
 	 */
-	export type OperationName = 'account_create' | 'account_create_with_delegation' | 'account_update' | 'account_witness_proxy' | 'account_witness_vote' | 'cancel_transfer_from_savings' | 'change_recovery_account' | 'claim_account' | 'claim_reward_balance' | 'comment' | 'comment_options' | 'convert' | 'create_claimed_account' | 'custom' | 'custom_binary' | 'custom_json' | 'decline_voting_rights' | 'delegate_vesting_shares' | 'delete_comment' | 'escrow_approve' | 'escrow_dispute' | 'escrow_release' | 'escrow_transfer' | 'feed_publish' | 'limit_order_cancel' | 'limit_order_create' | 'limit_order_create2' | 'pow' | 'pow2' | 'recover_account' | 'report_over_production' | 'request_account_recovery' | 'reset_account' | 'set_reset_account' | 'set_withdraw_vesting_route' | 'transfer' | 'transfer_from_savings' | 'transfer_to_savings' | 'transfer_to_vesting' | 'vote' | 'withdraw_vesting' | 'witness_set_properties' | 'witness_update';
+	export type OperationName = 'account_create' | 'account_create_with_delegation' | 'owner_create' | 'account_update' | 'account_witness_proxy' | 'account_witness_vote' | 'cancel_transfer_from_savings' | 'change_recovery_account' | 'claim_account' | 'claim_reward_balance' | 'comment' | 'comment_options' | 'convert' | 'create_claimed_account' | 'custom' | 'custom_binary' | 'custom_json' | 'decline_voting_rights' | 'delegate_vesting_shares' | 'delete_comment' | 'escrow_approve' | 'escrow_dispute' | 'escrow_release' | 'escrow_transfer' | 'feed_publish' | 'limit_order_cancel' | 'limit_order_create' | 'limit_order_create2' | 'pow' | 'pow2' | 'recover_account' | 'report_over_production' | 'request_account_recovery' | 'reset_account' | 'set_reset_account' | 'set_withdraw_vesting_route' | 'transfer' | 'transfer_from_savings' | 'transfer_to_savings' | 'transfer_to_vesting' | 'vote' | 'withdraw_vesting' | 'witness_set_properties' | 'witness_update';
 	/**
 	 * Virtual operation name.
 	 */
@@ -989,6 +1003,14 @@ declare module 'dsteem/steem/operation' {
 	         * Extensions. Not currently used.
 	         */
 	        extensions: any[];
+	    };
+	}
+	export interface OwnerCreateOperation extends Operation {
+	    0: 'owner_create';
+	    1: {
+	        creator: string;
+	        owner: string;
+	        signing_key: string | PublicKey;
 	    };
 	}
 	export interface AccountUpdateOperation extends Operation {
@@ -1681,7 +1703,7 @@ declare module 'dsteem/steem/operation' {
 	}
 
 }
-declare module 'dsteem/steem/transaction' {
+declare module 'eftg-dsteem/steem/transaction' {
 	/**
 	 * @file Steem transaction type definitions.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -1716,7 +1738,7 @@ declare module 'dsteem/steem/transaction' {
 	 * You acknowledge that this software is not designed, licensed or intended for use
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
-	import { Operation } from 'dsteem/steem/operation';
+	import { Operation } from 'eftg-dsteem/steem/operation';
 	export interface Transaction {
 	    ref_block_num: number;
 	    ref_block_prefix: number;
@@ -1735,7 +1757,7 @@ declare module 'dsteem/steem/transaction' {
 	}
 
 }
-declare module 'dsteem/steem/block' {
+declare module 'eftg-dsteem/steem/block' {
 	/**
 	 * @file Steem block type definitions.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -1770,7 +1792,7 @@ declare module 'dsteem/steem/block' {
 	 * You acknowledge that this software is not designed, licensed or intended for use
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
-	import { Transaction } from 'dsteem/steem/transaction';
+	import { Transaction } from 'eftg-dsteem/steem/transaction';
 	/**
 	 * Unsigned block header.
 	 */
@@ -1798,7 +1820,7 @@ declare module 'dsteem/steem/block' {
 	}
 
 }
-declare module 'dsteem/helpers/blockchain' {
+declare module 'eftg-dsteem/helpers/blockchain' {
 	/**
 	 * @file Steem blockchain helpers.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -1834,9 +1856,9 @@ declare module 'dsteem/helpers/blockchain' {
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
 	/// <reference types="node" />
-	import { Client } from 'dsteem/client';
-	import { BlockHeader, SignedBlock } from 'dsteem/steem/block';
-	import { AppliedOperation } from 'dsteem/steem/operation';
+	import { Client } from 'eftg-dsteem/client';
+	import { BlockHeader, SignedBlock } from 'eftg-dsteem/steem/block';
+	import { AppliedOperation } from 'eftg-dsteem/steem/operation';
 	export enum BlockchainMode {
 	    /**
 	     * Only get irreversible blocks.
@@ -1905,7 +1927,7 @@ declare module 'dsteem/helpers/blockchain' {
 	}
 
 }
-declare module 'dsteem/helpers/broadcast' {
+declare module 'eftg-dsteem/helpers/broadcast' {
 	/**
 	 * @file Broadcast API helpers.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -1940,12 +1962,12 @@ declare module 'dsteem/helpers/broadcast' {
 	 * You acknowledge that this software is not designed, licensed or intended for use
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
-	import { Client } from 'dsteem/client';
-	import { PrivateKey, PublicKey } from 'dsteem/crypto';
-	import { AuthorityType } from 'dsteem/steem/account';
-	import { Asset } from 'dsteem/steem/asset';
-	import { AccountUpdateOperation, CommentOperation, CommentOptionsOperation, CustomJsonOperation, DelegateVestingSharesOperation, Operation, TransferOperation, VoteOperation } from 'dsteem/steem/operation';
-	import { SignedTransaction, Transaction, TransactionConfirmation } from 'dsteem/steem/transaction';
+	import { Client } from 'eftg-dsteem/client';
+	import { PrivateKey, PublicKey } from 'eftg-dsteem/crypto';
+	import { AuthorityType } from 'eftg-dsteem/steem/account';
+	import { Asset } from 'eftg-dsteem/steem/asset';
+	import { AccountUpdateOperation, CommentOperation, CommentOptionsOperation, CustomJsonOperation, DelegateVestingSharesOperation, Operation, TransferOperation, VoteOperation } from 'eftg-dsteem/steem/operation';
+	import { SignedTransaction, Transaction, TransactionConfirmation } from 'eftg-dsteem/steem/transaction';
 	export interface CreateAccountOptions {
 	    /**
 	     * Username for the new account.
@@ -2073,7 +2095,7 @@ declare module 'dsteem/helpers/broadcast' {
 	}
 
 }
-declare module 'dsteem/helpers/database' {
+declare module 'eftg-dsteem/helpers/database' {
 	/**
 	 * @file Database API helpers.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -2108,15 +2130,15 @@ declare module 'dsteem/helpers/database' {
 	 * You acknowledge that this software is not designed, licensed or intended for use
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
-	import { Client } from 'dsteem/client';
-	import { ExtendedAccount } from 'dsteem/steem/account';
-	import { Price } from 'dsteem/steem/asset';
-	import { BlockHeader, SignedBlock } from 'dsteem/steem/block';
-	import { Discussion } from 'dsteem/steem/comment';
-	import { DynamicGlobalProperties } from 'dsteem/steem/misc';
-	import { ChainProperties, VestingDelegation } from 'dsteem/steem/misc';
-	import { AppliedOperation } from 'dsteem/steem/operation';
-	import { SignedTransaction, TransactionConfirmation } from 'dsteem/steem/transaction';
+	import { Client } from 'eftg-dsteem/client';
+	import { ExtendedAccount } from 'eftg-dsteem/steem/account';
+	import { Price } from 'eftg-dsteem/steem/asset';
+	import { BlockHeader, SignedBlock } from 'eftg-dsteem/steem/block';
+	import { Discussion } from 'eftg-dsteem/steem/comment';
+	import { DynamicGlobalProperties } from 'eftg-dsteem/steem/misc';
+	import { ChainProperties, VestingDelegation } from 'eftg-dsteem/steem/misc';
+	import { AppliedOperation } from 'eftg-dsteem/steem/operation';
+	import { SignedTransaction, TransactionConfirmation } from 'eftg-dsteem/steem/transaction';
 	/**
 	 * Possible categories for `get_discussions_by_*`.
 	 */
@@ -2228,7 +2250,109 @@ declare module 'dsteem/helpers/database' {
 	}
 
 }
-declare module 'dsteem/client' {
+declare module 'eftg-dsteem/steem/rc' {
+	import { SMTAsset } from 'eftg-dsteem/steem/asset';
+	import { Bignum } from 'eftg-dsteem/steem/misc';
+	export interface RCParams {
+	    resource_history_bytes: Resource;
+	    resource_new_accounts: Resource;
+	    resource_market_bytes: Resource;
+	    resource_state_bytes: Resource;
+	    resource_execution_time: Resource;
+	}
+	export interface Resource {
+	    resource_dynamics_params: DynamicParam;
+	    price_curve_params: PriceCurveParam;
+	}
+	export interface DynamicParam {
+	    resource_unit: number;
+	    budget_per_time_unit: number;
+	    pool_eq: Bignum;
+	    max_pool_size: Bignum;
+	    decay_params: {
+	        decay_per_time_unit: Bignum;
+	        decay_per_time_unit_denom_shift: number;
+	    };
+	    min_decay: number;
+	}
+	export interface PriceCurveParam {
+	    coeff_a: Bignum;
+	    coeff_b: Bignum;
+	    shift: number;
+	}
+	export interface RCPool {
+	    resource_history_bytes: Pool;
+	    resource_new_accounts: Pool;
+	    resource_market_bytes: Pool;
+	    resource_state_bytes: Pool;
+	    resource_execution_time: Pool;
+	}
+	export interface Pool {
+	    pool: Bignum;
+	}
+	export interface RCAccount {
+	    account: string;
+	    rc_manabar: {
+	        current_mana: Bignum;
+	        last_update_time: number;
+	    };
+	    max_rc_creation_adjustment: SMTAsset | string;
+	    max_rc: Bignum;
+	}
+	export interface Manabar {
+	    current_mana: number;
+	    max_mana: number;
+	    percentage: number;
+	}
+
+}
+declare module 'eftg-dsteem/helpers/rc' {
+	import { Client } from 'eftg-dsteem/client';
+	import { Account } from 'eftg-dsteem/steem/account';
+	import { Manabar, RCAccount, RCParams, RCPool } from 'eftg-dsteem/steem/rc';
+	export class RCAPI {
+	    readonly client: Client;
+	    constructor(client: Client);
+	    /**
+	     * Convenience for calling `rc_api`.
+	     */
+	    call(method: string, params?: any): Promise<any>;
+	    /**
+	     * Returns RC data for array of usernames
+	     */
+	    findRCAccounts(usernames: string[]): Promise<RCAccount[]>;
+	    /**
+	     * Returns the global resource params
+	     */
+	    getResourceParams(): Promise<RCParams>;
+	    /**
+	     * Returns the global resource pool
+	     */
+	    getResourcePool(): Promise<RCPool>;
+	    /**
+	     * Makes a API call and returns the RC mana-data for a specified username
+	     */
+	    getRCMana(username: string): Promise<Manabar>;
+	    /**
+	     * Makes a API call and returns the VP mana-data for a specified username
+	     */
+	    getVPMana(username: string): Promise<Manabar>;
+	    /**
+	     * Calculates the RC mana-data based on an RCAccount - findRCAccounts()
+	     */
+	    calculateRCMana(rc_account: RCAccount): Manabar;
+	    /**
+	     * Calculates the RC mana-data based on an Account - getAccounts()
+	     */
+	    calculateVPMana(account: Account): Manabar;
+	    /**
+	     * Internal convenience method to reduce redundant code
+	     */
+	    private _calculateManabar;
+	}
+
+}
+declare module 'eftg-dsteem/client' {
 	/**
 	 * @file Steem RPC client implementation.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -2264,9 +2388,10 @@ declare module 'dsteem/client' {
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
 	/// <reference types="node" />
-	import { Blockchain } from 'dsteem/helpers/blockchain';
-	import { BroadcastAPI } from 'dsteem/helpers/broadcast';
-	import { DatabaseAPI } from 'dsteem/helpers/database';
+	import { Blockchain } from 'eftg-dsteem/helpers/blockchain';
+	import { BroadcastAPI } from 'eftg-dsteem/helpers/broadcast';
+	import { DatabaseAPI } from 'eftg-dsteem/helpers/database';
+	import { RCAPI } from 'eftg-dsteem/helpers/rc';
 	/**
 	 * Library version.
 	 */
@@ -2278,7 +2403,7 @@ declare module 'dsteem/client' {
 	/**
 	 * Main steem network address prefix.
 	 */
-	export const DEFAULT_ADDRESS_PREFIX = "STM";
+	export const DEFAULT_ADDRESS_PREFIX = "EUR";
 	/**
 	 * RPC Client options
 	 * ------------------
@@ -2336,6 +2461,10 @@ declare module 'dsteem/client' {
 	     */
 	    readonly database: DatabaseAPI;
 	    /**
+	     * RC API helper.
+	     */
+	    readonly rc: RCAPI;
+	    /**
 	     * Broadcast API helper.
 	     */
 	    readonly broadcast: BroadcastAPI;
@@ -2351,7 +2480,6 @@ declare module 'dsteem/client' {
 	     * Address prefix for current network.
 	     */
 	    readonly addressPrefix: string;
-	    private seqNo;
 	    private timeout;
 	    private backoff;
 	    /**
@@ -2371,7 +2499,7 @@ declare module 'dsteem/client' {
 	}
 
 }
-declare module 'dsteem' {
+declare module 'eftg-dsteem' {
 	/**
 	 * @file dsteem exports.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -2406,23 +2534,24 @@ declare module 'dsteem' {
 	 * You acknowledge that this software is not designed, licensed or intended for use
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
-	import * as utils from 'dsteem/utils';
+	import * as utils from 'eftg-dsteem/utils';
 	export { utils };
-	export * from 'dsteem/helpers/blockchain';
-	export * from 'dsteem/helpers/database';
-	export * from 'dsteem/steem/account';
-	export * from 'dsteem/steem/asset';
-	export * from 'dsteem/steem/block';
-	export * from 'dsteem/steem/comment';
-	export * from 'dsteem/steem/misc';
-	export * from 'dsteem/steem/operation';
-	export * from 'dsteem/steem/serializer';
-	export * from 'dsteem/steem/transaction';
-	export * from 'dsteem/client';
-	export * from 'dsteem/crypto';
+	export * from 'eftg-dsteem/helpers/blockchain';
+	export * from 'eftg-dsteem/helpers/database';
+	export * from 'eftg-dsteem/helpers/rc';
+	export * from 'eftg-dsteem/steem/account';
+	export * from 'eftg-dsteem/steem/asset';
+	export * from 'eftg-dsteem/steem/block';
+	export * from 'eftg-dsteem/steem/comment';
+	export * from 'eftg-dsteem/steem/misc';
+	export * from 'eftg-dsteem/steem/operation';
+	export * from 'eftg-dsteem/steem/serializer';
+	export * from 'eftg-dsteem/steem/transaction';
+	export * from 'eftg-dsteem/client';
+	export * from 'eftg-dsteem/crypto';
 
 }
-declare module 'dsteem/index-browser' {
+declare module 'eftg-dsteem/index-browser' {
 	/**
 	 * @file dsteem entry point for browsers.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -2457,18 +2586,18 @@ declare module 'dsteem/index-browser' {
 	 * You acknowledge that this software is not designed, licensed or intended for use
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
+	import 'regenerator-runtime/runtime';
 	import 'core-js/es6/map';
 	import 'core-js/es6/number';
 	import 'core-js/es6/promise';
 	import 'core-js/es6/symbol';
 	import 'core-js/fn/array/from';
 	import 'core-js/modules/es7.symbol.async-iterator';
-	import 'regenerator-runtime/runtime';
 	import 'whatwg-fetch';
-	export * from 'dsteem';
+	export * from 'eftg-dsteem';
 
 }
-declare module 'dsteem/index-node' {
+declare module 'eftg-dsteem/index-node' {
 	/**
 	 * @file dsteem entry point for node.js.
 	 * @author Johan Nordberg <code@johan-nordberg.com>
@@ -2504,6 +2633,6 @@ declare module 'dsteem/index-node' {
 	 * in the design, construction, operation or maintenance of any military facility.
 	 */
 	import 'core-js/modules/es7.symbol.async-iterator';
-	export * from 'dsteem';
+	export * from 'eftg-dsteem';
 
 }

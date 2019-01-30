@@ -4,34 +4,40 @@ PATH  := ./node_modules/.bin:$(PATH)
 
 SRC_FILES := $(shell find src -name '*.ts')
 
+define VERSION_TEMPLATE
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = '$(shell node -p 'require("./package.json").version')';
+endef
+
 all: lib bundle docs
 
+export VERSION_TEMPLATE
 lib: $(SRC_FILES) node_modules
 	tsc -p tsconfig.json --outDir lib && \
-	VERSION="$$(node -p 'require("./package.json").version')"; \
-	echo "module.exports = '$${VERSION}';" > lib/version.js
+	echo "$$VERSION_TEMPLATE" > lib/version.js
 	touch lib
 
 dist/%.js: lib
 	browserify $(filter-out $<,$^) --debug --full-paths \
-		--standalone dsteem --plugin tsify \
+		--standalone dsteem-eftg --plugin tsify \
 		--transform [ babelify --extensions .ts ] \
 		| derequire > $@
 	uglifyjs $@ \
 		--source-map "content=inline,url=$(notdir $@).map,filename=$@.map" \
 		--compress "dead_code,collapse_vars,reduce_vars,keep_infinity,drop_console,passes=2" \
-		--output $@ || rm $@
+		--output $@ 
 
-dist/dsteem.js: src/index-browser.ts
+dist/eftg-dsteem.js: src/index-browser.ts
 
-dist/dsteem.d.ts: $(SRC_FILES) node_modules
-	dts-generator --name dsteem --project . --out dist/dsteem.d.ts
-	sed -e "s@'dsteem/index'@'dsteem'@g" -i dist/dsteem.d.ts
+dist/eftg-dsteem.d.ts: $(SRC_FILES) node_modules
+	dts-generator --name eftg-dsteem --project . --out dist/eftg-dsteem.d.ts
+	sed -e "s@'eftg-dsteem/index'@'eftg-dsteem'@g" -i dist/eftg-dsteem.d.ts
 
-dist/%.gz: dist/dsteem.js
+dist/%.gz: dist/eftg-dsteem.js
 	gzip -9 -f -c $(basename $@) > $(basename $@).gz
 
-bundle: dist/dsteem.js.gz dist/dsteem.d.ts
+bundle: dist/eftg-dsteem.js.gz dist/eftg-dsteem.d.ts
 
 .PHONY: coverage
 coverage: node_modules
@@ -39,7 +45,7 @@ coverage: node_modules
 
 .PHONY: test
 test: node_modules
-	mocha --exit --require ts-node/register test/*.ts --grep '$(grep)'
+	mocha --exit --require ts-node/register -r test/_node.js test/*.ts --grep '$(grep)'
 
 .PHONY: ci-test
 ci-test: node_modules
@@ -47,12 +53,12 @@ ci-test: node_modules
 	nyc -r lcov -e .ts -i ts-node/register mocha --exit --reporter tap --require ts-node/register test/*.ts
 
 .PHONY: browser-test
-browser-test: dist/dsteem.js
+browser-test: dist/eftg-dsteem.js
 	BUILD_NUMBER="$$(git rev-parse --short HEAD)-$$(date +%s)" \
 		karma start test/_karma-sauce.js
 
 .PHONY: browser-test-local
-browser-test-local: dist/dsteem.js
+browser-test-local: dist/eftg-dsteem.js
 	karma start test/_karma.js
 
 .PHONY: lint
@@ -65,7 +71,7 @@ node_modules:
 docs: $(SRC_FILES) node_modules
 	typedoc --gitRevision master --target ES6 --mode file --out docs src
 	find docs -name "*.html" | xargs sed -i 's~$(shell pwd)~.~g'
-	echo "Served at <https://jnordberg.github.io/dsteem/>" > docs/README.md
+  echo "Served at <https://jnordberg.github.io/dsteem/>" > docs/README.md
 	touch docs
 
 .PHONY: clean

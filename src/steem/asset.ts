@@ -36,6 +36,12 @@
 import * as assert from 'assert'
 import * as ByteBuffer from 'bytebuffer'
 
+export interface SMTAsset {
+    amount: string|number,
+    precision: number,
+    nai: string
+}
+
 /**
  * Asset symbol string.
  */
@@ -110,9 +116,9 @@ export class Asset {
             case 'TESTS':
             case 'TBD':
             case 'STEEM':
+            case 'SBD':
             case 'EFTG':
             case 'EUR':
-            case 'SBD':
                 return 3
             case 'VESTS':
                 return 6
