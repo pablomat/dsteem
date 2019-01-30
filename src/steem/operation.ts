@@ -46,6 +46,7 @@ import {ChainProperties, HexBuffer} from './misc'
 export type OperationName = // <id>
     | 'account_create' // 9
     | 'account_create_with_delegation' // 41
+    | 'owner_create' // EFTG
     | 'account_update' // 10
     | 'account_witness_proxy' // 13
     | 'account_witness_vote' // 12
@@ -155,6 +156,15 @@ export interface AccountCreateWithDelegationOperation extends Operation {
          * Extensions. Not currently used.
          */
         extensions: any[]
+    }
+}
+
+export interface OwnerCreateOperation extends Operation {
+    0: 'owner_create'
+    1: {
+        creator: string // account_name_type
+        owner: string // account_name_type
+        signing_key: string | PublicKey // public_key_type        
     }
 }
 
