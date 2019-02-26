@@ -89,25 +89,27 @@ export type OperationName = // <id>
     | 'withdraw_vesting' // 4
     | 'witness_set_properties' // 42
     | 'witness_update' // 11
+    | 'sbd_create' // 45
+    | 'sbd_burn' // 46
 
 /**
  * Virtual operation name.
  */
 export type VirtualOperationName = // <id>
-    | 'author_reward' // 45
-    | 'comment_benefactor_reward' // 57
-    | 'comment_payout_update' // 55
-    | 'comment_reward' // 47
-    | 'curation_reward' // 46
-    | 'fill_convert_request' // 44
-    | 'fill_order' // 51
-    | 'fill_transfer_from_savings' // 53
-    | 'fill_vesting_withdraw' // 50
-    | 'hardfork' // 54
-    | 'interest' // 49
-    | 'liquidity_reward' // 48
-    | 'return_vesting_delegation' // 56
-    | 'shutdown_witness' // 52
+    | 'author_reward' // 47
+    | 'comment_benefactor_reward' // 59
+    | 'comment_payout_update' // 57
+    | 'comment_reward' // 49
+    | 'curation_reward' // 48
+    | 'fill_convert_request' // 46
+    | 'fill_order' // 53
+    | 'fill_transfer_from_savings' // 55
+    | 'fill_vesting_withdraw' // 52
+    | 'hardfork' // 56
+    | 'interest' // 51
+    | 'liquidity_reward' // 50
+    | 'return_vesting_delegation' // 58
+    | 'shutdown_witness' // 54
 
 /**
  * Generic operation.
@@ -902,5 +904,23 @@ export interface WitnessSetPropertiesOperation extends Operation {
         owner: string
         props: Array<[string, Buffer]>
         extensions: any[]
+    }
+}
+
+export interface SbdCreateOperation extends Operation {
+    0: 'sbd_create' // 45
+    1: {
+        owner: string
+        amount: string | Asset
+        memo: string
+    }
+}
+
+export interface SbdBurnOperation extends Operation {
+    0: 'sbd_burn' // 46
+    1: {
+        owner: string
+        amount: string | Asset
+        memo: string
     }
 }

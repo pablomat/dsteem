@@ -542,6 +542,18 @@ OperationSerializers.witness_set_properties = OperationDataSerializer(42, [
     ['extensions', ArraySerializer(VoidSerializer)],
 ])
 
+OperationSerializers.sbd_create = OperationDataSerializer(45, [
+    ['owner', StringSerializer],
+    ['amount', AssetSerializer],
+    ['memo', StringSerializer],
+])
+
+OperationSerializers.sbd_burn = OperationDataSerializer(46, [
+    ['owner', StringSerializer],
+    ['amount', AssetSerializer],
+    ['memo', StringSerializer],
+])
+
 const OperationSerializer = (buffer: ByteBuffer, operation: Operation) => {
     const serializer = OperationSerializers[operation[0]]
     if (!serializer) {
