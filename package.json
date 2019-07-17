@@ -1,6 +1,6 @@
 {
   "name": "eftg-dsteem",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "EFTG blockchain RPC client library",
   "author": "pablomat",
   "license": "BSD-3-Clause",
