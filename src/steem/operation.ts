@@ -91,6 +91,7 @@ export type OperationName = // <id>
     | 'witness_update' // 11
     | 'sbd_create' // 45
     | 'sbd_burn' // 46
+    | 'owner_set_properties' // 47
 
 /**
  * Virtual operation name.
@@ -922,5 +923,13 @@ export interface SbdBurnOperation extends Operation {
         owner: string
         amount: string | Asset
         memo: string
+    }
+}
+
+export interface OwnerSetPropertiesOperation extends Operation {
+    0: 'owner_set_properties' // 47
+    1: {
+        owner: string
+        props: Array<[string, Buffer]>
     }
 }

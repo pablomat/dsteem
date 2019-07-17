@@ -117,7 +117,7 @@ export async function retryingFetch(url: string, opts: any, timeout: number,
 import * as ByteBuffer from 'bytebuffer'
 import {PublicKey} from './crypto'
 import {Asset, PriceType} from './steem/asset'
-import {WitnessSetPropertiesOperation} from './steem/operation'
+import {WitnessSetPropertiesOperation, OwnerSetPropertiesOperation} from './steem/operation'
 import {Serializer, Types} from './steem/serializer'
 export interface WitnessProps {
     account_creation_fee?: string | Asset
@@ -171,4 +171,33 @@ export function buildWitnessUpdateOp(owner: string, props: WitnessProps): Witnes
     }
     data.props.sort((a, b) => a[0].localeCompare(b[0]))
     return ['witness_set_properties', data]
+}
+
+export interface gov_properties {
+    vesting_withdraw_intervals?: number // uint32_t
+    vesting_withdraw_interval_seconds?: number // uint32_t
+    vesting_withdraw_enable_vote: boolean // bool
+}
+
+export function buildOwnerSetPropertiesOperation(owner: string, props: gov_properties): OwnerSetPropertiesOperation {
+    const data: OwnerSetPropertiesOperation[1] = {
+        owner, props: []
+    }
+    for (const key of Object.keys(props)) {
+        let type: Serializer
+        switch (key) {
+            case 'vesting_withdraw_interval_seconds':
+            case 'vesting_withdraw_intervals':
+                type = Types.UInt32
+                break
+            case 'vesting_withdraw_enable_vote':
+                type = Types.Boolean
+                break
+            default:
+                throw new Error(`Unknown witness prop: ${ key }`)
+        }
+        data.props.push([key, serialize(type, props[key])])
+    }
+    data.props.sort((a, b) => a[0].localeCompare(b[0]))
+    return ['owner_set_properties', data]
 }

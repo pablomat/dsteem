@@ -554,6 +554,11 @@ OperationSerializers.sbd_burn = OperationDataSerializer(46, [
     ['memo', StringSerializer],
 ])
 
+OperationSerializers.owner_set_properties = OperationDataSerializer(47, [
+    ['owner', StringSerializer],
+    ['props', FlatMapSerializer(StringSerializer, VariableBinarySerializer)]
+])
+
 const OperationSerializer = (buffer: ByteBuffer, operation: Operation) => {
     const serializer = OperationSerializers[operation[0]]
     if (!serializer) {
