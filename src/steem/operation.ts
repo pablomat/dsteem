@@ -46,10 +46,11 @@ import {ChainProperties, HexBuffer} from './misc'
 export type OperationName = // <id>
     | 'account_create' // 9
     | 'account_create_with_delegation' // 41
-    | 'owner_create' // EFTG
+    | 'owner_create' // 43
     | 'account_update' // 10
     | 'account_witness_proxy' // 13
     | 'account_witness_vote' // 12
+    | 'account_witness_weight_vote' // 44
     | 'cancel_transfer_from_savings' // 34
     | 'change_recovery_account' // 26
     | 'claim_account' // 22
@@ -88,25 +89,28 @@ export type OperationName = // <id>
     | 'withdraw_vesting' // 4
     | 'witness_set_properties' // 42
     | 'witness_update' // 11
+    | 'sbd_create' // 45
+    | 'sbd_burn' // 46
+    | 'owner_set_properties' // 47
 
 /**
  * Virtual operation name.
  */
 export type VirtualOperationName = // <id>
-    | 'author_reward' // 43
-    | 'comment_benefactor_reward' // 55
-    | 'comment_payout_update' // 53
-    | 'comment_reward' // 45
-    | 'curation_reward' // 44
-    | 'fill_convert_request' // 42
-    | 'fill_order' // 49
-    | 'fill_transfer_from_savings' // 51
-    | 'fill_vesting_withdraw' // 48
-    | 'hardfork' // 52
-    | 'interest' // 47
-    | 'liquidity_reward' // 46
-    | 'return_vesting_delegation' // 54
-    | 'shutdown_witness' // 50
+    | 'author_reward' // 47
+    | 'comment_benefactor_reward' // 59
+    | 'comment_payout_update' // 57
+    | 'comment_reward' // 49
+    | 'curation_reward' // 48
+    | 'fill_convert_request' // 46
+    | 'fill_order' // 53
+    | 'fill_transfer_from_savings' // 55
+    | 'fill_vesting_withdraw' // 52
+    | 'hardfork' // 56
+    | 'interest' // 51
+    | 'liquidity_reward' // 50
+    | 'return_vesting_delegation' // 58
+    | 'shutdown_witness' // 54
 
 /**
  * Generic operation.
@@ -160,7 +164,7 @@ export interface AccountCreateWithDelegationOperation extends Operation {
 }
 
 export interface OwnerCreateOperation extends Operation {
-    0: 'owner_create'
+    0: 'owner_create' //43
     1: {
         creator: string // account_name_type
         owner: string // account_name_type
@@ -194,6 +198,15 @@ export interface AccountWitnessVoteOperation extends Operation {
         account: string // account_name_type
         witness: string // account_name_type
         approve: boolean
+    }
+}
+
+export interface AccountWitnessWeightVoteOperation extends Operation {
+    0: 'account_witness_weight_vote' // 44
+    1: {
+        account: string // account_name_type
+        witness: string // account_name_type
+        shares:  string | Asset
     }
 }
 
@@ -892,5 +905,31 @@ export interface WitnessSetPropertiesOperation extends Operation {
         owner: string
         props: Array<[string, Buffer]>
         extensions: any[]
+    }
+}
+
+export interface SbdCreateOperation extends Operation {
+    0: 'sbd_create' // 45
+    1: {
+        owner: string
+        amount: string | Asset
+        memo: string
+    }
+}
+
+export interface SbdBurnOperation extends Operation {
+    0: 'sbd_burn' // 46
+    1: {
+        owner: string
+        amount: string | Asset
+        memo: string
+    }
+}
+
+export interface OwnerSetPropertiesOperation extends Operation {
+    0: 'owner_set_properties' // 47
+    1: {
+        owner: string
+        props: Array<[string, Buffer]>
     }
 }

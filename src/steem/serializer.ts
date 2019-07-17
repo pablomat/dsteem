@@ -245,7 +245,7 @@ OperationSerializers.account_create_with_delegation = OperationDataSerializer(41
     ['extensions', ArraySerializer(VoidSerializer)],
 ])
 
-OperationSerializers.owner_create = OperationDataSerializer(101, [
+OperationSerializers.owner_create = OperationDataSerializer(43, [
     ['creator', StringSerializer],
     ['owner', StringSerializer],
     ['signing_key', PublicKeySerializer],    
@@ -269,6 +269,12 @@ OperationSerializers.account_witness_vote = OperationDataSerializer(12, [
     ['account', StringSerializer],
     ['witness', StringSerializer],
     ['approve', BooleanSerializer],
+])
+
+OperationSerializers.account_witness_weight_vote = OperationDataSerializer(44, [
+    ['account', StringSerializer],
+    ['witness', StringSerializer],
+    ['shares',  AssetSerializer],
 ])
 
 OperationSerializers.cancel_transfer_from_savings = OperationDataSerializer(34, [
@@ -534,6 +540,23 @@ OperationSerializers.witness_set_properties = OperationDataSerializer(42, [
     ['owner', StringSerializer],
     ['props', FlatMapSerializer(StringSerializer, VariableBinarySerializer)],
     ['extensions', ArraySerializer(VoidSerializer)],
+])
+
+OperationSerializers.sbd_create = OperationDataSerializer(45, [
+    ['owner', StringSerializer],
+    ['amount', AssetSerializer],
+    ['memo', StringSerializer],
+])
+
+OperationSerializers.sbd_burn = OperationDataSerializer(46, [
+    ['owner', StringSerializer],
+    ['amount', AssetSerializer],
+    ['memo', StringSerializer],
+])
+
+OperationSerializers.owner_set_properties = OperationDataSerializer(47, [
+    ['owner', StringSerializer],
+    ['props', FlatMapSerializer(StringSerializer, VariableBinarySerializer)]
 ])
 
 const OperationSerializer = (buffer: ByteBuffer, operation: Operation) => {
