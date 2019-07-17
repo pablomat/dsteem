@@ -554,6 +554,27 @@ OperationSerializers.sbd_burn = OperationDataSerializer(46, [
     ['memo', StringSerializer],
 ])
 
+OperationSerializers.subscribe = OperationDataSerializer(47, [
+    ['reader', StringSerializer],
+    ['reporter', StringSerializer],
+    ['plan', StringSerializer],
+    ['starting_from', DateSerializer],
+])
+
+OperationSerializers.set_plan = OperationDataSerializer(48, [
+    ['owner', StringSerializer],
+    ['name', StringSerializer],
+    ['cost', AssetSerializer],
+    ['period', UInt64Serializer],
+    ['number_documents', UInt32Serializer],
+    ['id_items', ArraySerializer(UInt16Serializer)],
+])
+
+OperationSerializers.remove_plan = OperationDataSerializer(49, [
+    ['owner', StringSerializer],
+    ['name', StringSerializer],
+])
+
 const OperationSerializer = (buffer: ByteBuffer, operation: Operation) => {
     const serializer = OperationSerializers[operation[0]]
     if (!serializer) {

@@ -91,25 +91,28 @@ export type OperationName = // <id>
     | 'witness_update' // 11
     | 'sbd_create' // 45
     | 'sbd_burn' // 46
+    | 'subscribe' // 47
+    | 'set_plan' // 48
+    | 'remove_plan' // 49
 
 /**
  * Virtual operation name.
  */
 export type VirtualOperationName = // <id>
-    | 'author_reward' // 47
-    | 'comment_benefactor_reward' // 59
-    | 'comment_payout_update' // 57
-    | 'comment_reward' // 49
-    | 'curation_reward' // 48
-    | 'fill_convert_request' // 46
-    | 'fill_order' // 53
-    | 'fill_transfer_from_savings' // 55
-    | 'fill_vesting_withdraw' // 52
-    | 'hardfork' // 56
-    | 'interest' // 51
-    | 'liquidity_reward' // 50
-    | 'return_vesting_delegation' // 58
-    | 'shutdown_witness' // 54
+    | 'author_reward' // 50
+    | 'comment_benefactor_reward' // 62
+    | 'comment_payout_update' // 60
+    | 'comment_reward' // 52
+    | 'curation_reward' // 51
+    | 'fill_convert_request' // 49
+    | 'fill_order' // 56
+    | 'fill_transfer_from_savings' // 58
+    | 'fill_vesting_withdraw' // 55
+    | 'hardfork' // 59
+    | 'interest' // 54
+    | 'liquidity_reward' // 53
+    | 'return_vesting_delegation' // 61
+    | 'shutdown_witness' // 57
 
 /**
  * Generic operation.
@@ -922,5 +925,35 @@ export interface SbdBurnOperation extends Operation {
         owner: string
         amount: string | Asset
         memo: string
+    }
+}
+
+export interface SubscribeOperation extends Operation {
+    0: 'subscribe' // 47
+    1: {
+        reader: string
+        reporter: string
+        plan: string
+        starting_from: string
+    }
+}
+
+export interface SetPlanOperation extends Operation {
+    0: 'set_plan' // 48
+    1: {
+        owner: string
+        name: string
+        cost: string | Asset
+        period: number
+        number_documents: number
+        id_items: number[]
+    }
+}
+
+export interface RemovePlanOperation extends Operation {
+    0: 'remove_plan' // 49
+    1: {
+        owner: string
+        name: string
     }
 }
